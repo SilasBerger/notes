@@ -1,0 +1,17 @@
+{
+  "name": "asciidoc-notes-builder",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "node ./asciidoctor-build.js",
+    "start": "onchange ../notes/**/*.adoc -- npm run build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "asciidoctor": "^2.2.6",
+    "directory-tree": "^3.4.0",
+    "onchange": "^7.1.0"
+  }
+}
