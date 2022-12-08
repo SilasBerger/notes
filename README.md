@@ -1,6 +1,6 @@
 # AsciiDoc Notes Builder
 ## Usage
-## Installation
+### Installation
 * Clone this repository
 * From the root of this repository, run `$ npm install`
 * Create a `notes` directory next to the root of this repository, containing all notes (possibly nested; see _Expected Directory Structure_ below)
