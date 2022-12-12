@@ -1,7 +1,11 @@
 # AsciiDoc Notes Builder
 ## Usage
+### Requirements
+* Node v18.12.1+
+
 ### Installation
 * Clone this repository
+* If you are using `nvm`, run `nvm use`
 * From the root of this repository, run `$ npm install`
 * Create a `notes` directory next to the root of this repository, containing all notes (possibly nested; see _Expected Directory Structure_ below)
 * Refer to the _Commands_ section below for building

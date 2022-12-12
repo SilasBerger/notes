@@ -47,7 +47,7 @@ function getOutputFilename(inputFile) {
 }
 
 function clean() {
-  fs.rmdir(outputRoot, {recursive: true}, err => console.error(err));
+  fs.rmSync(outputRoot, {recursive: true, force: true});
 }
 
 function build() {
