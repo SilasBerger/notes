@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "node ./asciidoctor-build.js",
-    "start": "(npm run build && onchange ../notes/** -- npm run build) & (live-server ../build)"
+    "build": "node ./notes.js",
+    "build:watch": "node ./notes.js --watch",
+    "start": "node ./notes.js --serve"
   },
   "keywords": [],
   "author": "",
@@ -12,8 +13,8 @@
   "dependencies": {
     "asciidoctor": "^2.2.6",
     "directory-tree": "^3.4.0",
-    "live-server": "^1.2.2",
-    "livereload": "^0.9.3",
-    "onchange": "^7.1.0"
+    "express": "^4.18.2",
+    "express-ws": "^5.0.2",
+    "node-html-parser": "^6.1.4"
   }
 }
