@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "node ./notes.js",
-    "build:watch": "node ./notes.js --watch",
-    "start": "node ./notes.js --serve"
+    "build": "node ./src/app/main.js build",
+    "build:watch": "node ./src/app/main.js watch",
+    "start": "node ./src/app/main.js serve"
   },
   "keywords": [],
   "author": "",
