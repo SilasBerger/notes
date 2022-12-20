@@ -31,3 +31,8 @@ $ npm run engine:build # remove dir, build all .adoc files in adocDir, output to
 $ npm run engine:watch # build once, rebuild on changes in adocDir
 $ npm run engine:serve # build once, rebuild on changes in adocDir, serve htmlDir on specified port
 ```
+
+### Useful Alias
+```
+notes="(cd /path/to/asciidoc-notes-builder && npm run notes:serve)"
+```
