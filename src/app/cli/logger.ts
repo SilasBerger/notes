@@ -1,6 +1,6 @@
 export class Logger {
 
-    static serverLaunched(port: number): void {
+    static serverLaunched(port: string): void {
         console.log(`🚀 Server launched (port ${port})`);
     }
 

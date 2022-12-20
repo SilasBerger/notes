@@ -1,3 +1,3 @@
 export type RunModeHandlers = {
-    [key: string]: () => any
+    [key: string]: (notesHome: string) => any
 }
