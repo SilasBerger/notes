@@ -1,5 +1,5 @@
 (function() {
-  const ws = new WebSocket('ws://localhost:3000/ws');
+  const ws = new WebSocket(`ws://${window.location.host}/ws`);
   ws.onmessage = msg => {
     switch(msg.data) {
       case 'ready':
