@@ -1,53 +1,42 @@
 import os from 'os';
 import path from 'path';
 import fs from 'fs';
+import {NotesConfig, NotesSourceSpec} from "../models/config";
 
 export class ConfigLoader {
 
-    private static readonly CONFIG_FILE_NAME = '.asciidocnotesrc';
-    private static readonly KEY_VALUE_SEPARATOR = '=';
+    private static readonly CONFIG_FILE_NAME = '.notesrc.json';
 
-    constructor(private configLines: string[]) {
-    }
-
-    static loadConfig(): RcConfig {
+    static loadConfig(): NotesConfig {
         const rcFilePath = path.resolve(os.homedir(), ConfigLoader.CONFIG_FILE_NAME);
         if (!fs.existsSync(rcFilePath)) {
             throw `Config file not found: ${rcFilePath}`;
         }
 
-        const rcFileLines = fs.readFileSync(rcFilePath, 'utf-8').split(/\r?\n/);
+        const notesConfig = JSON.parse(fs.readFileSync(rcFilePath, 'utf-8'));
+        ConfigLoader.validateConfig(notesConfig);
 
-        const instance = new ConfigLoader(rcFileLines);
-        return instance.parseConfigFile();
+        return notesConfig;
     }
 
-    private parseConfigFile(): RcConfig {
-        return {
-            adocDir: this.requirePathProperty('adocDir'),
-            htmlDir: this.requirePathProperty('htmlDir'),
-            servePort: this.requireProperty('servePort'),
-        };
-    }
+    private static validateConfig(configObj: NotesConfig): void {
+        ConfigLoader.requireProperty('noteSources', configObj);
+        ConfigLoader.requireProperty('htmlDir', configObj);
+        ConfigLoader.requireProperty('servePort', configObj);
 
-    private requireProperty(propName: string): string {
-        const targetPrefix = `${propName}${ConfigLoader.KEY_VALUE_SEPARATOR}`;
-        const line = this.configLines.find((line: string) => line.startsWith(targetPrefix));
-        if (!line) {
-            throw `Missing config line: ${propName}`;
+        if (configObj.noteSources.length < 1) {
+            throw 'Must specify at least one note source';
         }
 
-        const separatorIndex = line.indexOf(ConfigLoader.KEY_VALUE_SEPARATOR);
-        return line.substring(separatorIndex + 1);
+        configObj.noteSources.forEach((noteSource: NotesSourceSpec) => {
+            ConfigLoader.requireProperty('name', noteSource);
+            ConfigLoader.requireProperty('path', noteSource);
+        });
     }
 
-    private requirePathProperty(propName: string): string {
-        return path.resolve(this.requireProperty(propName));
+    private static requireProperty(propName: string, obj: {[key: string]: any}) {
+        if (!Object.keys(obj).includes(propName)) {
+            throw `Missing config property: ${propName}`;
+        }
     }
-}
-
-export interface RcConfig {
-    adocDir: string;
-    htmlDir: string;
-    servePort: string;
 }

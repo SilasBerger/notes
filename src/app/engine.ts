@@ -1,25 +1,25 @@
 import {AsciidocBuilder} from "./asciidoc/asciidoc-builder";
-import {RcConfig} from "./cli/config-loader";
 import {Logger} from "./cli/logger";
 import {LiveServer} from "./server/live-server";
 import fs from "fs";
+import {NotesConfig, NotesSourceSpec} from "./models/config";
 
 export class Engine {
 
-    private readonly adocBuilder: AsciidocBuilder;
+    private readonly asciidocBuilder: AsciidocBuilder;
 
-    constructor(private config: RcConfig) {
-        this.adocBuilder = new AsciidocBuilder(config.adocDir, config.htmlDir);
+    constructor(private config: NotesConfig) {
+        this.asciidocBuilder = new AsciidocBuilder(config.noteSources, config.htmlDir);
     }
 
     build(): void {
         Logger.building();
-        this.adocBuilder.cleanAndBuild();
+        this.asciidocBuilder.cleanAndBuild();
     }
 
     watch(): void {
         this.runInitialBuild();
-        this.rebuildOnAdocFileChanges();
+        this.rebuildOnNoteFileChanges();
     }
 
     serve(): void {
@@ -29,33 +29,35 @@ export class Engine {
 
     private runInitialBuild(): void {
         Logger.runningInitialBuild();
-        this.adocBuilder.cleanAndBuild();
+        this.asciidocBuilder.cleanAndBuild();
     }
 
     private launchLiveServer(): void {
-        const indexPageProvider = () => this.adocBuilder.createIndexPage();
+        const indexPageProvider = () => this.asciidocBuilder.createIndexPage();
         let servePort = this.config.servePort;
         const server = new LiveServer(this.config.htmlDir, servePort, indexPageProvider);
         server.launch(() => Logger.serverLaunched(servePort));
 
-        this.rebuildOnAdocFileChanges(() => {
+        this.rebuildOnNoteFileChanges(() => {
             Logger.notifyingWebClientsAfterRebuild();
             server.notifyChanges();
         });
     }
 
-    private rebuildOnAdocFileChanges(afterRebuild?: () => any): void {
+    private rebuildOnNoteFileChanges(afterRebuild?: () => any): void {
         Logger.watchingForFileChanges();
-        this.watchForFileChanges(this.config.adocDir, () => {
-            Logger.rebuildingAfterChange();
-            this.adocBuilder.cleanAndBuild();
-            if (afterRebuild) {
-                afterRebuild();
-            }
+        this.config.noteSources.forEach((notesSource: NotesSourceSpec) => {
+            this.watchForFileChanges(notesSource.path, () => {
+                Logger.rebuildingAfterNoteChanged(notesSource.name);
+                this.asciidocBuilder.cleanAndBuild();
+                if (afterRebuild) {
+                    afterRebuild();
+                }
+            });
         });
     }
 
-    private watchForFileChanges(targetDir: string, callback: () => any): void {
+    private watchForFileChanges(targetDir: string, callback: (changedSourceName: string) => any): void {
         fs.watch(targetDir, {recursive: true}, callback);
     }
 }

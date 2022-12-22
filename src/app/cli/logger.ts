@@ -1,6 +1,6 @@
 export class Logger {
 
-    static serverLaunched(port: string): void {
+    static serverLaunched(port: number): void {
         console.log(`🚀 Server launched (port ${port})`);
     }
 
@@ -16,8 +16,8 @@ export class Logger {
         console.log('🔨 Running initial build');
     }
 
-    static rebuildingAfterChange(): void {
-        console.log('🔨 Change detected, rebuilding');
+    static rebuildingAfterNoteChanged(changedSourceName: string): void {
+        console.log(`🔨 Change detected in source '${changedSourceName}', rebuilding`);
     }
 
     static watchingForFileChanges(): void {
