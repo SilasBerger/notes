@@ -1,6 +1,7 @@
 import {ConfigLoader} from "./cli/config-loader";
-import {CliArgParser, RunMode} from "./cli/cli-arg-parser";
+import {CliArgParser} from "./cli/cli-arg-parser";
 import {Engine} from "./engine";
+import {RunMode} from "./models/cli";
 
 function main() {
     const config = ConfigLoader.loadConfig();

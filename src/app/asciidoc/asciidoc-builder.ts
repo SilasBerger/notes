@@ -1,8 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import dirTree, {DirectoryTree} from 'directory-tree';
-import {NotesSourceSpec} from "../cli/config-loader";
 import {lastElementOf} from "../util/util";
+import {TreeNode} from "../models/note-file-tree";
+import {NotesSourceSpec} from "../models/config";
 
 const Asciidoctor = require('asciidoctor');
 
@@ -117,11 +118,4 @@ export class AsciidocBuilder {
     const linkName = `${noteFileRef.logicalPath.join('/')} [${noteFileRef.source.name}]`;
     return `* link:/${linkPath}[${linkName}]\n`;
   }
-}
-
-interface TreeNode {
-  source: NotesSourceSpec;
-  path: string;
-  logicalPath: string[];
-  children: TreeNode[]
 }

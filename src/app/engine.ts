@@ -1,8 +1,8 @@
 import {AsciidocBuilder} from "./asciidoc/asciidoc-builder";
-import {NotesConfig, NotesSourceSpec} from "./cli/config-loader";
 import {Logger} from "./cli/logger";
 import {LiveServer} from "./server/live-server";
 import fs from "fs";
+import {NotesConfig, NotesSourceSpec} from "./models/config";
 
 export class Engine {
 

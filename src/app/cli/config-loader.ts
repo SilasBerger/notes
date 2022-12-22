@@ -1,13 +1,11 @@
 import os from 'os';
 import path from 'path';
 import fs from 'fs';
+import {NotesConfig, NotesSourceSpec} from "../models/config";
 
 export class ConfigLoader {
 
     private static readonly CONFIG_FILE_NAME = '.notesrc.json';
-
-    constructor(private configLines: string[]) {
-    }
 
     static loadConfig(): NotesConfig {
         const rcFilePath = path.resolve(os.homedir(), ConfigLoader.CONFIG_FILE_NAME);
@@ -41,15 +39,4 @@ export class ConfigLoader {
             throw `Missing config property: ${propName}`;
         }
     }
-}
-
-export interface NotesConfig {
-    noteSources: NotesSourceSpec[];
-    htmlDir: string;
-    servePort: number;
-}
-
-export interface NotesSourceSpec {
-    name: string;
-    path: string;
 }
