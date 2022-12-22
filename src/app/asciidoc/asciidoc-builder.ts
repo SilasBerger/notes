@@ -22,8 +22,7 @@ export class AsciidocBuilder {
   }
 
   build(): void {
-    const noteFileTree = this.createNoteFileTree();
-    const noteFilesRefs = this.collectNoteFilesRefs(noteFileTree);
+    const noteFilesRefs = this.getNoteFileRefs();
     noteFilesRefs.forEach((noteFileRef: TreeNode) => this.convertFile(noteFileRef));
   }
 
@@ -32,49 +31,9 @@ export class AsciidocBuilder {
     this.build();
   }
 
-  createIndexPage(): string {
-    // const inputFiles = this.collectInputFiles(dirTree(this.notesDirs));
-    // let output = "= Index\n\n";
-    // inputFiles.forEach((inputFile: DirectoryTree) => output += this.createIndexEntry(inputFile));
-    // return this.asciidoctor.convert(output, {standalone: true, safe: 'unsafe'}) as string;
-    return '';
-  }
-
-  private createIndexEntry(inputFileRef: TreeNode): string {
-    const outputFilename = path.relative(this.outputRoot, this.getOutputFilename(inputFileRef));
-    return `* link:/${outputFilename}[${outputFilename}]\n`;
-  }
-
-  private collectNoteFilesRefs(treeNode: TreeNode): TreeNode[] {
-    if (AsciidocBuilder.isAsciidocFile(treeNode)) {
-      return [treeNode]
-    }
-
-    return treeNode.children?.flatMap(child => this.collectNoteFilesRefs(child)) || [];
-  }
-
-  private static isAsciidocFile(treeNode: TreeNode): boolean {
-    return (treeNode.children.length === 0) && !!lastElementOf(treeNode.logicalPath)?.endsWith('.adoc');
-  }
-
-  private convertFile(noteFileRef: TreeNode): void {
-    fs.readFile(noteFileRef.path, 'utf8', (err, data) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-
-      this.asciidoctor.convert(data, {to_file: this.getOutputFilename(noteFileRef), mkdirs: true, safe: 'unsafe'});
-    });
-  }
-
-  private getOutputFilename(noteFileRef: TreeNode): string {
-    const noteFilePathRelativeToSourceRoot = path.relative(noteFileRef.source.path, noteFileRef.path);
-    const outputDirPath = path.dirname(path.resolve(this.outputRoot, noteFilePathRelativeToSourceRoot));
-
-    const outputFilename = path.basename(noteFileRef.path, this.INPUT_FILE_EXT) + this.OUTPUT_FILE_EXT;
-
-    return path.resolve(outputDirPath, outputFilename);
+  private getNoteFileRefs(): TreeNode[] {
+    const noteFileTree = this.createNoteFileTree();
+    return this.collectNoteFilesRefs(noteFileTree);
   }
 
   private createNoteFileTree(): TreeNode {
@@ -113,6 +72,51 @@ export class AsciidocBuilder {
     });
 
     parent.children.push(childNode);
+  }
+
+  private collectNoteFilesRefs(treeNode: TreeNode): TreeNode[] {
+    if (AsciidocBuilder.isAsciidocFile(treeNode)) {
+      return [treeNode]
+    }
+
+    return treeNode.children?.flatMap(child => this.collectNoteFilesRefs(child)) || [];
+  }
+
+  private static isAsciidocFile(treeNode: TreeNode): boolean {
+    return (treeNode.children.length === 0) && !!lastElementOf(treeNode.logicalPath)?.endsWith('.adoc');
+  }
+
+  private convertFile(noteFileRef: TreeNode): void {
+    fs.readFile(noteFileRef.path, 'utf8', (err, data) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+
+      this.asciidoctor.convert(data, {to_file: this.getOutputFilename(noteFileRef), mkdirs: true, safe: 'unsafe'});
+    });
+  }
+
+  private getOutputFilename(noteFileRef: TreeNode): string {
+    const noteFilePathRelativeToSourceRoot = path.relative(noteFileRef.source.path, noteFileRef.path);
+    const outputDirPath = path.dirname(path.resolve(this.outputRoot, noteFilePathRelativeToSourceRoot));
+
+    const outputFilename = path.basename(noteFileRef.path, this.INPUT_FILE_EXT) + this.OUTPUT_FILE_EXT;
+
+    return path.resolve(outputDirPath, outputFilename);
+  }
+
+  createIndexPage(): string {
+    const noteFileRefs = this.getNoteFileRefs();
+    let output = "= Index\n\n";
+    noteFileRefs.forEach((inputFile: TreeNode) => output += this.createIndexEntry(inputFile));
+    return this.asciidoctor.convert(output, {standalone: true, safe: 'unsafe'}) as string;
+  }
+
+  private createIndexEntry(noteFileRef: TreeNode): string {
+    const linkPath = path.relative(this.outputRoot, this.getOutputFilename(noteFileRef));
+    const linkName = noteFileRef.logicalPath.join('/');
+    return `* link:/${linkPath}[${linkName}]\n`;
   }
 }
 
