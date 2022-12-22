@@ -57,13 +57,12 @@ export class AsciidocBuilder {
   private appendChildren(targetPath: string, parent: TreeNode, source: NotesSourceSpec) {
     const tree: DirectoryTree = dirTree(targetPath);
 
-    const pathRelativeToParent = parent.path ? path.relative(parent.path, targetPath) : '';
-    const logicalPathSegments = pathRelativeToParent.split(path.sep).filter(segment => !!segment);
+    const logicalPathSegments = path.relative(source.path, targetPath).split(path.sep);
 
     const childNode: TreeNode = {
       source: source,
       path: targetPath,
-      logicalPath: [source.name, ...logicalPathSegments],
+      logicalPath: logicalPathSegments,
       children: [],
     };
 
@@ -115,7 +114,7 @@ export class AsciidocBuilder {
 
   private createIndexEntry(noteFileRef: TreeNode): string {
     const linkPath = path.relative(this.outputRoot, this.getOutputFilename(noteFileRef));
-    const linkName = noteFileRef.logicalPath.join('/');
+    const linkName = `${noteFileRef.logicalPath.join('/')} [${noteFileRef.source.name}]`;
     return `* link:/${linkPath}[${linkName}]\n`;
   }
 }
