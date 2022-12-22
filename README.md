@@ -1,4 +1,4 @@
-# AsciiDoc Notes Builder
+# Notes
 A simple Asciidoc-to-HTML converter with built-in live-updating web server.
 
 **Key Features:**
