@@ -14,7 +14,7 @@ export class LiveServer {
   private readonly htmlTransformer: HtmlTransformer;
   private webSockets: WebSocket[];
 
-  constructor(private rootDir: string, private port: string, private indexPageProvider: () => string) {
+  constructor(private rootDir: string, private port: number, private indexPageProvider: () => string) {
     this.expressApp = express();
     this.htmlTransformer = new HtmlTransformer();
     this.webSockets = [];
