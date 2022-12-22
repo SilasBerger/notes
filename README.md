@@ -56,9 +56,9 @@ The following properties are expected in the `.notesrc.json` file:
 
 ### Commands
 ```sh
-$ npm run engine:build # remove dir, build all .adoc files in all note sources, output to htmlDir
-$ npm run engine:watch # build once, rebuild on changes in any file or directory in any note source
-$ npm run engine:serve # build once, rebuild on changes in note sources, serve htmlDir on specified port
+$ npm run notes:build # remove dir, build all .adoc files in all note sources, output to htmlDir
+$ npm run notes:watch # build once, rebuild on changes in any file or directory in any note source
+$ npm run notes:serve # build once, rebuild on changes in note sources, serve htmlDir on specified port
 ```
 
 ### Useful Alias
